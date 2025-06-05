@@ -10,12 +10,24 @@
   <div class="form-container">
     <h2>Login</h2>
     <img src="images/logo.png" alt="My Logo" class="logo" />
-    <form>
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-      <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-    </form>
+    <form method="POST" action="/login">
+        <input type="email" name="username" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+</form>
+
   </div>
+  <script>
+  window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signup') === 'success') {
+      alert('Signup successful! Please login.');
+    }
+  };
+</script>
 </body>
 </html>
+
+
+
