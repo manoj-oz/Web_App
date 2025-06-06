@@ -2,7 +2,9 @@ const express = require('express');
 const path = require('path');
 const { Pool } = require('pg');
 const app = express();
-const PORT = 3000;
+
+// Use environment PORT or fallback to 3000 for local dev
+const PORT = process.env.PORT || 3000;
 
 // PostgreSQL connection config
 const pool = new Pool({
@@ -36,12 +38,12 @@ app.post('/signup', async (req, res) => {
     console.log('✅ User registered:', fullname);
     res.redirect('/index.html?signup=success');
 
-
   } catch (err) {
-    console.error('❌ Signup Error:', err.stack); // Full error log
+    console.error('❌ Signup Error:', err.stack);
     res.status(500).send('<h3>Internal Server Error. Please try again later.</h3>');
   }
 });
+
 // === Login Route ===
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -64,11 +66,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
-
 // === Student Enquiry Form Route ===
 app.post('/submit-enquiry', async (req, res) => {
   const {
@@ -82,7 +79,7 @@ app.post('/submit-enquiry', async (req, res) => {
     passedYear,
     about,
     mode,
-    batch_time,  // changed here
+    batch_time,
     language,
     demoStatus,
     comment
@@ -105,7 +102,7 @@ app.post('/submit-enquiry', async (req, res) => {
         passedYear,
         about,
         mode,
-        batch_time,  // changed here
+        batch_time,
         language,
         demoStatus,
         comment || null
@@ -120,7 +117,7 @@ app.post('/submit-enquiry', async (req, res) => {
   }
 });
 
-// Start server
+// Start server once
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
