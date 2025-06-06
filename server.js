@@ -3,21 +3,23 @@ const path = require('path');
 const { Pool } = require('pg');
 const app = express();
 
-// Use environment PORT or fallback to 3000 for local dev
+// Use dynamic port for Render, fallback to 3000 locally
 const PORT = process.env.PORT || 3000;
 
-// PostgreSQL connection config
+// PostgreSQL connection
 const pool = new Pool({
-  user: 'postgres',           // your Postgres username
-  host: 'localhost',
-  database: 'postgres',       // your database name
-  password: 'Manoj1234',      // your Postgres password
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:Manoj1234@localhost:5432/postgres',
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route - serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // === Signup Route ===
 app.post('/signup', async (req, res) => {
@@ -37,7 +39,6 @@ app.post('/signup', async (req, res) => {
 
     console.log('✅ User registered:', fullname);
     res.redirect('/index.html?signup=success');
-
   } catch (err) {
     console.error('❌ Signup Error:', err.stack);
     res.status(500).send('<h3>Internal Server Error. Please try again later.</h3>');
@@ -66,7 +67,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// === Student Enquiry Form Route ===
+// === Student Enquiry Route ===
 app.post('/submit-enquiry', async (req, res) => {
   const {
     fullname,
@@ -117,7 +118,7 @@ app.post('/submit-enquiry', async (req, res) => {
   }
 });
 
-// Start server once
+// Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
